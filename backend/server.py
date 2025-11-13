@@ -543,7 +543,7 @@ Provide helpful, professional advice and draft petition content as needed."""
         api_key=os.environ.get('EMERGENT_LLM_KEY'),
         session_id=f"chat_{request.client_id}",
         system_message=system_message
-    ).with_model("openai", "gpt-5")
+    ).with_model("openai", "gpt-4o")
     
     user_message = UserMessage(text=request.message)
     response = await chat.send_message(user_message)
