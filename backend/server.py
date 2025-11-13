@@ -400,6 +400,7 @@ async def generate_petition(request: PetitionGenerate, username: str = Depends(v
     rag_context = await get_relevant_context(request.prompt)
     
     # Build system message
+    client_section = f'Client Documents and CV:\n{client_context}\n\n' if client_context else ''
     template_section = f'Template Context:\n{template_context}\n\n' if template_context else ''
     rag_section = f'Reference Context from Successful Petitions:\n{rag_context}\n\n' if rag_context else ''
     
@@ -410,13 +411,15 @@ Your writing style is:
 - Evidence-backed and detailed
 - Aligned with USCIS requirements
 - Clear and compelling
+- Uses specific details from the client's CV and documents
 
 Client: {client['name']}
+Email: {client['email']}
 Visa Type: {request.visa_type}
 Criterion: {request.criterion or 'General'}
 
-{template_section}{rag_section}
-Generate a high-quality petition section based on the user's request."""
+{client_section}{template_section}{rag_section}
+IMPORTANT: Use specific information from the client's documents above. Include real names, dates, achievements, publications, awards, and quantifiable metrics from their CV. Do NOT use placeholders like [Your Name] or [Company Name]. Write a complete, ready-to-use petition section with actual details."""
     
     # Generate with GPT-4o
     chat = LlmChat(
