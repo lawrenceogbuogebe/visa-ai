@@ -275,9 +275,30 @@ const Templates = ({ setToken }) => {
                     <h4 className="text-lg font-semibold mb-1">{template.criterion}</h4>
                     <p className="text-sm text-gray-400">Created {new Date(template.created_at).toLocaleDateString()}</p>
                   </div>
-                  <span className="px-3 py-1 text-xs font-medium rounded-full brand-bg text-white">
-                    {template.visa_type}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 text-xs font-medium rounded-full brand-bg text-white">
+                      {template.visa_type}
+                    </span>
+                    <button
+                      data-testid={`delete-template-${template.id}`}
+                      onClick={async () => {
+                        if (window.confirm('Delete this template?')) {
+                          try {
+                            await axios.delete(`${API}/templates/${template.id}`, {
+                              headers: { Authorization: `Bearer ${token}` }
+                            });
+                            toast.success('Template deleted');
+                            fetchTemplates();
+                          } catch (error) {
+                            toast.error('Failed to delete template');
+                          }
+                        }
+                      }}
+                      className="text-red-400 hover:text-red-300 text-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
                 <div className="prose prose-invert max-w-none">
                   <p className="text-sm text-gray-300 whitespace-pre-wrap">{template.content}</p>
