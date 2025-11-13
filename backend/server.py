@@ -366,6 +366,28 @@ async def generate_petition(request: PetitionGenerate, username: str = Depends(v
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
     
+    # Get client documents (CV and evidence)
+    documents = await db.documents.find({'client_id': request.client_id}, {'_id': 0}).to_list(100)
+    
+    # Extract text from client documents
+    client_docs_text = []
+    for doc in documents:
+        try:
+            if doc['file_path'].endswith('.pdf'):
+                text = extract_text_from_pdf(doc['file_path'])
+            elif doc['file_path'].endswith('.docx'):
+                text = extract_text_from_docx(doc['file_path'])
+            else:
+                with open(doc['file_path'], 'r', encoding='utf-8', errors='ignore') as f:
+                    text = f.read()
+            
+            if text:
+                client_docs_text.append(f"Document: {doc['filename']}\n{text[:2000]}")  # First 2000 chars
+        except Exception as e:
+            logging.error(f"Error extracting text from {doc['filename']}: {e}")
+    
+    client_context = '\n\n---\n\n'.join(client_docs_text) if client_docs_text else ''
+    
     # Get relevant templates
     templates = await db.templates.find({
         'visa_type': request.visa_type,
