@@ -363,6 +363,17 @@ const ClientView = ({ setToken }) => {
 
           <TabsContent value="petitions">
             <div className="space-y-4">
+              {/* Info Banner */}
+              <div className="glass-strong p-4 mb-4 border-l-4 border-brand-accent">
+                <p className="text-sm text-gray-300">
+                  <strong>How it works:</strong> The AI will generate petition content using:
+                  (1) Client documents you uploaded in the Documents tab,
+                  (2) Templates matching the selected criterion,
+                  (3) Training documents you uploaded in the Training page.
+                  Be specific in your prompt for best results!
+                </p>
+              </div>
+              
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Generated Petitions</h3>
                 <Dialog open={showGenerator} onOpenChange={setShowGenerator}>
