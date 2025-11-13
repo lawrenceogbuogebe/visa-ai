@@ -532,6 +532,32 @@ async def get_training_docs(username: str = Depends(verify_token)):
     
     return docs
 
+@api_router.delete("/training/docs/{doc_id}")
+async def delete_training_doc(doc_id: str, username: str = Depends(verify_token)):
+    # Get doc to delete file
+    doc = await db.training_docs.find_one({'id': doc_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Training document not found")
+    
+    # Delete from filesystem
+    try:
+        if os.path.exists(doc['file_path']):
+            os.remove(doc['file_path'])
+    except Exception as e:
+        logging.error(f"Error deleting file: {e}")
+    
+    # Delete from Pinecone
+    try:
+        index = pc.Index(INDEX_NAME)
+        index.delete(ids=[doc_id])
+    except Exception as e:
+        logging.error(f"Error deleting from Pinecone: {e}")
+    
+    # Delete from MongoDB
+    await db.training_docs.delete_one({'id': doc_id})
+    
+    return {"message": "Training document deleted successfully"}
+
 # Chat Endpoints
 @api_router.post("/chat/message", response_model=ChatResponse)
 async def send_chat_message(request: ChatRequest, username: str = Depends(verify_token)):
