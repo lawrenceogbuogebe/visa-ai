@@ -277,6 +277,15 @@ const ClientView = ({ setToken }) => {
 
           <TabsContent value="documents">
             <div className="space-y-4">
+              {/* Info Banner */}
+              <div className="glass-strong p-4 mb-4 border-l-4 border-brand-accent">
+                <p className="text-sm text-gray-300">
+                  <strong>How it works:</strong> Upload the client's CV and evidence documents here. 
+                  When you generate a petition, the AI will automatically extract information from these files 
+                  and use specific details (names, dates, achievements) in the generated content.
+                </p>
+              </div>
+              
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold" style={{ fontFamily: 'Space Grotesk' }}>Uploaded Documents</h3>
                 <Dialog open={showUpload} onOpenChange={setShowUpload}>
