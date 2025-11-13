@@ -358,6 +358,13 @@ async def get_templates(visa_type: Optional[str] = None, username: str = Depends
     
     return templates
 
+@api_router.delete("/templates/{template_id}")
+async def delete_template(template_id: str, username: str = Depends(verify_token)):
+    result = await db.templates.delete_one({'id': template_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return {"message": "Template deleted successfully"}
+
 # Petition Generation Endpoint
 @api_router.post("/petitions/generate", response_model=ChatResponse)
 async def generate_petition(request: PetitionGenerate, username: str = Depends(verify_token)):
