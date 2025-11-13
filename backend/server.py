@@ -528,13 +528,14 @@ async def send_chat_message(request: ChatRequest, username: str = Depends(verify
     rag_context = await get_relevant_context(request.message)
     
     # Build system message
+    rag_section = f'Reference Context:\n{rag_context}\n\n' if rag_context else ''
+    
     system_message = f"""You are an expert immigration petition assistant for Visar, helping with {client['visa_type']} visa petitions.
 
 Client: {client['name']}
 Visa Type: {client['visa_type']}
 
-{f'Reference Context:\n{rag_context}\n\n' if rag_context else ''}
-
+{rag_section}
 Provide helpful, professional advice and draft petition content as needed."""
     
     # Generate response
