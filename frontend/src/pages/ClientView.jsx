@@ -421,8 +421,46 @@ const ClientView = ({ setToken }) => {
                         </div>
                         <span className="px-3 py-1 text-xs rounded-full brand-bg text-white">{petition.visa_type}</span>
                       </div>
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-sm whitespace-pre-wrap">{petition.content}</p>
+                      <div className="relative">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(petition.content);
+                            toast.success('Copied to clipboard!');
+                          }}
+                          className="absolute top-0 right-0 btn-secondary text-xs px-3 py-1"
+                          data-testid={`copy-petition-${petition.id}`}
+                        >
+                          Copy
+                        </button>
+                        <div className="prose prose-invert max-w-none mt-8">
+                          {petition.content.split('\n').map((line, i) => {
+                            // Handle bold text **text**
+                            let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            // Handle bullet points
+                            if (line.trim().startsWith('- ')) {
+                              return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^- /, '') }} />;
+                            }
+                            // Handle numbered lists
+                            if (/^\d+\.\s/.test(line.trim())) {
+                              return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^\d+\.\s/, '') }} />;
+                            }
+                            // Handle headers (lines with ###, ##, #)
+                            if (line.trim().startsWith('###')) {
+                              return <h4 key={i} className="text-lg font-semibold mt-4 mb-2 brand-accent">{line.replace(/###\s?/, '')}</h4>;
+                            }
+                            if (line.trim().startsWith('##')) {
+                              return <h3 key={i} className="text-xl font-semibold mt-4 mb-2 brand-accent">{line.replace(/##\s?/, '')}</h3>;
+                            }
+                            if (line.trim().startsWith('#')) {
+                              return <h2 key={i} className="text-2xl font-bold mt-4 mb-2">{line.replace(/#\s?/, '')}</h2>;
+                            }
+                            // Regular paragraphs
+                            if (line.trim()) {
+                              return <p key={i} className="mb-3" dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+                            }
+                            return <br key={i} />;
+                          })}
+                        </div>
                       </div>
                     </div>
                   ))}
