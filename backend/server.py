@@ -378,6 +378,9 @@ async def generate_petition(request: PetitionGenerate, username: str = Depends(v
     rag_context = await get_relevant_context(request.prompt)
     
     # Build system message
+    template_section = f'Template Context:\n{template_context}\n\n' if template_context else ''
+    rag_section = f'Reference Context from Successful Petitions:\n{rag_context}\n\n' if rag_context else ''
+    
     system_message = f"""You are an expert immigration petition writer for Visar, specializing in {request.visa_type} visas.
 
 Your writing style is:
@@ -390,9 +393,7 @@ Client: {client['name']}
 Visa Type: {request.visa_type}
 Criterion: {request.criterion or 'General'}
 
-{f'Template Context:\n{template_context}\n\n' if template_context else ''}
-{f'Reference Context from Successful Petitions:\n{rag_context}\n\n' if rag_context else ''}
-
+{template_section}{rag_section}
 Generate a high-quality petition section based on the user's request."""
     
     # Generate with GPT-5
