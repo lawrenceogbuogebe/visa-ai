@@ -259,7 +259,28 @@ const Training = ({ setToken }) => {
                           <p className="text-sm text-gray-400">Uploaded {new Date(doc.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      <span className="px-3 py-1 text-xs rounded-full brand-bg text-white">{doc.visa_type}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="px-3 py-1 text-xs rounded-full brand-bg text-white">{doc.visa_type}</span>
+                        <button
+                          data-testid={`delete-training-${doc.id}`}
+                          onClick={async () => {
+                            if (window.confirm('Delete this training document? It will be removed from the AI training data.')) {
+                              try {
+                                await axios.delete(`${API}/training/docs/${doc.id}`, {
+                                  headers: { Authorization: `Bearer ${token}` }
+                                });
+                                toast.success('Training document deleted');
+                                fetchTrainingDocs();
+                              } catch (error) {
+                                toast.error('Failed to delete document');
+                              }
+                            }
+                          }}
+                          className="text-red-400 hover:text-red-300 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))
                 )}
