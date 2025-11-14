@@ -199,9 +199,20 @@ const ClientView = ({ setToken }) => {
               <h1 className="text-3xl lg:text-4xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>{client.name}</h1>
               <p className="text-base text-gray-400">{client.email}</p>
             </div>
-            <span className="px-4 py-2 text-sm font-medium rounded-full brand-bg text-white">
-              {client.visa_type}
-            </span>
+            <div className="flex items-center gap-3">
+              {client.visa_type === 'EB2NIW' && (
+                <button
+                  onClick={() => navigate(`/petition-builder/${clientId}`)}
+                  className="btn-primary flex items-center gap-2"
+                >
+                  <Sparkles size={18} />
+                  Build Complete Petition
+                </button>
+              )}
+              <span className="px-4 py-2 text-sm font-medium rounded-full badge-gradient">
+                {client.visa_type}
+              </span>
+            </div>
           </div>
         </div>
       </div>
