@@ -29,6 +29,7 @@ const ClientView = ({ setToken }) => {
     criterion: '',
     prompt: ''
   });
+  const [expandedPetitions, setExpandedPetitions] = useState({});
 
   const token = localStorage.getItem('visar_token');
 
