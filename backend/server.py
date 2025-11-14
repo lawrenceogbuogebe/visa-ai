@@ -689,10 +689,60 @@ async def get_chat_history(client_id: str, username: str = Depends(verify_token)
     
     return history
 
+# Endeavor Suggestions for EB-2 NIW
+@api_router.post("/endeavor/suggest", response_model=EndeavorResponse)
+async def suggest_endeavor(request: EndeavorRequest, username: str = Depends(verify_token)):
+    system_message = """You are an expert EB-2 NIW petition strategist specializing in identifying compelling proposed endeavors and national interest arguments.
+
+Analyze the professional background and suggest:
+1. 3-5 specific proposed endeavor ideas that align with their expertise
+2. 3-5 distinct ways to demonstrate national interest for each endeavor
+
+Focus on:
+- Substantial merit and national importance
+- Well-positioned to advance the endeavor  
+- Benefit to the United States outweighs labor certification
+
+Be specific, strategic, and aligned with USCIS precedent decisions."""
+
+    chat = LlmChat(
+        api_key=os.environ.get('EMERGENT_LLM_KEY'),
+        session_id=f"endeavor_{username}",
+        system_message=system_message
+    ).with_model("openai", "gpt-4o")
+    
+    prompt = f"""Professional Background: {request.professional_background}
+Field: {request.field}
+
+Generate:
+1. Proposed Endeavor Ideas (3-5 specific, compelling endeavors)
+2. National Interest Angles (3-5 ways to demonstrate each prong for these endeavors)
+
+Format as JSON:
+{{
+  "endeavors": ["endeavor 1", "endeavor 2", ...],
+  "national_interest_angles": ["angle 1", "angle 2", ...]
+}}"""
+    
+    user_message = UserMessage(text=prompt)
+    response = await chat.send_message(user_message)
+    
+    # Parse JSON response
+    import json
+    try:
+        data = json.loads(response)
+        return EndeavorResponse(**data)
+    except:
+        # Fallback if JSON parsing fails
+        return EndeavorResponse(
+            endeavors=["Based on your background, we can structure compelling endeavors. Please provide more details."],
+            national_interest_angles=["We'll identify strong national interest arguments aligned with USCIS standards."]
+        )
+
 # Health check
 @api_router.get("/")
 async def root():
-    return {"message": "Visar Immigration API"}
+    return {"message": "VisaroAI Immigration Petition API"}
 
 # Include router
 app.include_router(api_router)
