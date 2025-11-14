@@ -54,10 +54,14 @@ h1, h2, h3, h4, h5, h6 {
 .glass-strong {
   background: linear-gradient(135deg, rgba(30, 30, 33, 0.8) 0%, rgba(40, 40, 43, 0.7) 100%);
   backdrop-filter: blur(24px);
-  border: 1px solid;
-  border-image: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(239, 98, 35, 0.3)) 1;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid transparent;
+  background-image: 
+    linear-gradient(135deg, rgba(30, 30, 33, 0.8) 0%, rgba(40, 40, 43, 0.7) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(239, 98, 35, 0.3));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 /* Brand colors with gradients */
