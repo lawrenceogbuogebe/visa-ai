@@ -14,6 +14,8 @@ const PetitionBuilder = ({ setToken }) => {
   const [client, setClient] = useState(null);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [uploadingCV, setUploadingCV] = useState(false);
+  const [cvFile, setCvFile] = useState(null);
   
   // Step 1: Professional Background
   const [backgroundData, setBackgroundData] = useState({
