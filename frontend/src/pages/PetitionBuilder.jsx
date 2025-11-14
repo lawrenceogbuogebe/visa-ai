@@ -596,6 +596,13 @@ The letter should sound personal and authentic to the recommender, not generic. 
           {/* Step 3: Review & Revise Cover Letter */}
           {step === 3 && (
             <div>
+              <button
+                onClick={() => setStep(2)}
+                className="btn-ghost flex items-center gap-2 mb-6"
+              >
+                <ArrowLeft size={18} />
+                Back to Endeavor Selection
+              </button>
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk' }}>Cover Letter Draft</h2>
               
               <div className="glass p-6 mb-6 max-h-96 overflow-y-auto">
