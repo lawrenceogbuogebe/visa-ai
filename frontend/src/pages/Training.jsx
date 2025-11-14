@@ -79,6 +79,46 @@ const Training = ({ setToken }) => {
     }
   };
 
+  const handlePaste = async (e) => {
+    e.preventDefault();
+    if (!pasteData.content.trim() || !pasteData.title.trim()) {
+      toast.error('Please fill all fields');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      await axios.post(`${API}/training/paste`, pasteData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Training text added and indexed successfully');
+      setShowUpload(false);
+      setPasteData({
+        title: '',
+        doc_type: 'successful',
+        doc_category: 'precedent_decision',
+        visa_type: 'EB2NIW',
+        content: ''
+      });
+      fetchTrainingDocs();
+    } catch (error) {
+      toast.error('Failed to add training text');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const getCategoryBadge = (category) => {
+    const badges = {
+      'petition': { label: 'Petition', color: 'bg-blue-500' },
+      'non_precedent_decision': { label: 'Non-Precedent', color: 'bg-purple-500' },
+      'precedent_decision': { label: 'Precedent', color: 'bg-yellow-500' },
+      'aao_decision': { label: 'AAO Decision', color: 'bg-pink-500' }
+    };
+    return badges[category] || badges['petition'];
+  };
+
   const successfulDocs = trainingDocs.filter(d => d.doc_type === 'successful');
   const unsuccessfulDocs = trainingDocs.filter(d => d.doc_type === 'unsuccessful');
 
