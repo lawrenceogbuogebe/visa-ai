@@ -432,58 +432,79 @@ const ClientView = ({ setToken }) => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {petitions.map((petition) => (
-                    <div key={petition.id} data-testid={`petition-${petition.id}`} className="glass p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h4 className="font-semibold text-lg">{petition.criterion || 'General Petition'}</h4>
-                          <p className="text-sm text-gray-400">Generated {new Date(petition.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <span className="px-3 py-1 text-xs rounded-full brand-bg text-white">{petition.visa_type}</span>
-                      </div>
-                      <div className="relative">
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(petition.content);
-                            toast.success('Copied to clipboard!');
-                          }}
-                          className="absolute top-0 right-0 btn-secondary text-xs px-3 py-1"
-                          data-testid={`copy-petition-${petition.id}`}
+                  {petitions.map((petition) => {
+                    const [expanded, setExpanded] = React.useState(false);
+                    const snippet = petition.content.substring(0, 150) + '...';
+                    
+                    return (
+                      <div 
+                        key={petition.id} 
+                        data-testid={`petition-${petition.id}`} 
+                        className={`glass p-6 petition-card ${expanded ? 'expanded' : ''}`}
+                      >
+                        <div 
+                          className="cursor-pointer"
+                          onClick={() => setExpanded(!expanded)}
                         >
-                          Copy
-                        </button>
-                        <div className="prose prose-invert max-w-none mt-8">
-                          {petition.content.split('\n').map((line, i) => {
-                            // Handle bold text **text**
-                            let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                            // Handle bullet points
-                            if (line.trim().startsWith('- ')) {
-                              return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^- /, '') }} />;
-                            }
-                            // Handle numbered lists
-                            if (/^\d+\.\s/.test(line.trim())) {
-                              return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^\d+\.\s/, '') }} />;
-                            }
-                            // Handle headers (lines with ###, ##, #)
-                            if (line.trim().startsWith('###')) {
-                              return <h4 key={i} className="text-lg font-semibold mt-4 mb-2 brand-accent">{line.replace(/###\s?/, '')}</h4>;
-                            }
-                            if (line.trim().startsWith('##')) {
-                              return <h3 key={i} className="text-xl font-semibold mt-4 mb-2 brand-accent">{line.replace(/##\s?/, '')}</h3>;
-                            }
-                            if (line.trim().startsWith('#')) {
-                              return <h2 key={i} className="text-2xl font-bold mt-4 mb-2">{line.replace(/#\s?/, '')}</h2>;
-                            }
-                            // Regular paragraphs
-                            if (line.trim()) {
-                              return <p key={i} className="mb-3" dangerouslySetInnerHTML={{ __html: formattedLine }} />;
-                            }
-                            return <br key={i} />;
-                          })}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-lg brand-accent">{petition.criterion || 'General Petition'}</h4>
+                              <p className="text-sm text-gray-400">Generated {new Date(petition.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigator.clipboard.writeText(petition.content);
+                                  toast.success('Copied to clipboard!');
+                                }}
+                                className="btn-secondary text-xs px-3 py-1"
+                                data-testid={`copy-petition-${petition.id}`}
+                              >
+                                Copy
+                              </button>
+                              <span className="px-3 py-1 text-xs rounded-full badge-gradient">{petition.visa_type}</span>
+                              <button className="text-gray-400 hover:text-white transition-colors">
+                                {expanded ? '▲' : '▼'}
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {!expanded && (
+                            <p className="text-sm text-gray-400 italic">{snippet}</p>
+                          )}
+                        </div>
+                        
+                        <div className={`petition-content ${expanded ? 'expanded' : ''}`}>
+                          <hr className="border-white/10 my-4" />
+                          <div className="prose prose-invert max-w-none">
+                            {petition.content.split('\n').map((line, i) => {
+                              let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                              if (line.trim().startsWith('- ')) {
+                                return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^- /, '') }} />;
+                              }
+                              if (/^\d+\.\s/.test(line.trim())) {
+                                return <li key={i} className="ml-4 mb-2" dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^\d+\.\s/, '') }} />;
+                              }
+                              if (line.trim().startsWith('###')) {
+                                return <h4 key={i} className="text-lg font-semibold mt-4 mb-2 brand-accent">{line.replace(/###\s?/, '')}</h4>;
+                              }
+                              if (line.trim().startsWith('##')) {
+                                return <h3 key={i} className="text-xl font-semibold mt-4 mb-2 brand-accent">{line.replace(/##\s?/, '')}</h3>;
+                              }
+                              if (line.trim().startsWith('#')) {
+                                return <h2 key={i} className="text-2xl font-bold mt-4 mb-2">{line.replace(/#\s?/, '')}</h2>;
+                              }
+                              if (line.trim()) {
+                                return <p key={i} className="mb-3" dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+                              }
+                              return <br key={i} />;
+                            })}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
