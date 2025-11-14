@@ -250,8 +250,13 @@ Generate the revised version maintaining the same structure but incorporating th
 
   // Step 4: Generate Reference Letters
   const handleGenerateReferences = async () => {
-    if (referenceInfo.length === 0) {
-      toast.error('Please add reference letter details');
+    // Filter out empty references
+    const filledReferences = referenceInfo.filter(ref => 
+      ref.name.trim() && ref.position.trim() && ref.institution.trim()
+    );
+
+    if (filledReferences.length === 0) {
+      toast.error('Please fill in at least one reference letter with complete details');
       return;
     }
 
