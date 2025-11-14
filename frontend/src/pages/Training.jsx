@@ -219,7 +219,7 @@ const Training = ({ setToken }) => {
             <DialogTrigger asChild>
               <button data-testid="upload-training-button" className="btn-primary flex items-center gap-2">
                 <Upload size={18} />
-                Upload Training Document
+                Add Training Data
               </button>
             </DialogTrigger>
             <DialogContent className="glass-strong text-white border-white/20 max-w-3xl">
