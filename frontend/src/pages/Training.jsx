@@ -189,20 +189,27 @@ const Training = ({ setToken }) => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="glass p-6">
             <div className="flex items-center justify-between mb-3">
               <CheckCircle className="text-green-500" size={24} />
               <span className="text-2xl font-bold">{successfulDocs.length}</span>
             </div>
-            <p className="text-sm text-gray-400">Successful Petitions</p>
+            <p className="text-sm text-gray-400">Successful</p>
           </div>
           <div className="glass p-6">
             <div className="flex items-center justify-between mb-3">
               <XCircle className="text-red-500" size={24} />
               <span className="text-2xl font-bold">{unsuccessfulDocs.length}</span>
             </div>
-            <p className="text-sm text-gray-400">Unsuccessful Petitions</p>
+            <p className="text-sm text-gray-400">Unsuccessful</p>
+          </div>
+          <div className="glass p-6">
+            <div className="flex items-center justify-between mb-3">
+              <FileText className="text-yellow-500" size={24} />
+              <span className="text-2xl font-bold">{trainingDocs.filter(d => d.doc_category === 'precedent_decision').length}</span>
+            </div>
+            <p className="text-sm text-gray-400">Precedent Decisions</p>
           </div>
           <div className="glass p-6">
             <div className="flex items-center justify-between mb-3">
