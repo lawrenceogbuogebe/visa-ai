@@ -70,7 +70,7 @@ const Training = ({ setToken }) => {
       toast.success('Training document uploaded and indexed successfully');
       setShowUpload(false);
       setSelectedFile(null);
-      setUploadData({ doc_type: 'successful', visa_type: 'EB1A' });
+      setUploadData({ doc_type: 'successful', doc_category: 'petition', visa_type: 'EB2NIW' });
       fetchTrainingDocs();
     } catch (error) {
       toast.error('Failed to upload training document');
