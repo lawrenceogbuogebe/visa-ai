@@ -90,6 +90,9 @@ const PetitionBuilder = ({ setToken }) => {
         }
       });
 
+      // Wait a moment for file to be saved
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       // Parse CV and extract data
       const response = await axios.post(`${API}/cv/parse`, {
         client_id: clientId
@@ -106,11 +109,15 @@ const PetitionBuilder = ({ setToken }) => {
       
       toast.success('CV data extracted! Review and edit as needed.');
     } catch (error) {
+      console.error('CV parsing error:', error);
       if (error.response?.status === 404) {
-        toast.error('No CV found. The file may still be uploading.');
+        toast.error('CV not found. Please wait a moment and try again.');
+      } else if (error.response?.status === 500) {
+        toast.error('Could not parse CV format. Please fill form manually.');
       } else {
-        toast.error('Failed to process CV. Please fill manually.');
+        toast.error('Failed to process CV. You can fill the form manually.');
       }
+      // Don't block the user - they can still fill manually
     } finally {
       setUploadingCV(false);
     }
