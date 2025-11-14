@@ -176,6 +176,20 @@ class EndeavorResponse(BaseModel):
     endeavors: List[str]
     national_interest_angles: List[str]
 
+class CVParseRequest(BaseModel):
+    client_id: str
+
+class CVParseResponse(BaseModel):
+    full_name: str
+    field: str
+    degree: str
+    experience_years: str
+    achievements: str
+    publications_count: str
+    awards: str
+    current_position: str
+    research_focus: str
+
 # Helper Functions
 def create_token(username: str) -> str:
     payload = {
