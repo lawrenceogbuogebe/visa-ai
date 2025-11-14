@@ -476,6 +476,7 @@ async def get_petitions(client_id: str, username: str = Depends(verify_token)):
 async def upload_training_doc(
     file: UploadFile = File(...),
     doc_type: str = Form(...),
+    doc_category: str = Form(...),
     visa_type: str = Form(...),
     username: str = Depends(verify_token)
 ):
@@ -501,6 +502,7 @@ async def upload_training_doc(
         filename=file.filename,
         file_path=str(file_path),
         doc_type=doc_type,
+        doc_category=doc_category,
         visa_type=visa_type,
         content=content
     )
@@ -519,9 +521,10 @@ async def upload_training_doc(
             training_doc.id,
             embedding,
             {
-                'text': content[:1000],  # Store first 1000 chars
+                'text': content[:1000],
                 'visa_type': visa_type,
                 'doc_type': doc_type,
+                'doc_category': doc_category,
                 'filename': file.filename
             }
         )])
@@ -529,6 +532,45 @@ async def upload_training_doc(
         logging.error(f"Error storing in Pinecone: {e}")
     
     return {"message": "Training document uploaded successfully", "doc_id": training_doc.id}
+
+# Training Text Paste
+@api_router.post("/training/paste")
+async def paste_training_text(training_data: TrainingTextCreate, username: str = Depends(verify_token)):
+    # Save to database
+    training_doc = TrainingDoc(
+        filename=training_data.title,
+        file_path=None,
+        doc_type=training_data.doc_type,
+        doc_category=training_data.doc_category,
+        visa_type=training_data.visa_type,
+        content=training_data.content
+    )
+    
+    doc = training_doc.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.training_docs.insert_one(doc)
+    
+    # Create embedding and store in Pinecone
+    try:
+        index = pc.Index(INDEX_NAME)
+        embedding = embedding_model.encode(training_data.content).tolist()
+        
+        index.upsert(vectors=[(
+            training_doc.id,
+            embedding,
+            {
+                'text': training_data.content[:1000],
+                'visa_type': training_data.visa_type,
+                'doc_type': training_data.doc_type,
+                'doc_category': training_data.doc_category,
+                'title': training_data.title
+            }
+        )])
+    except Exception as e:
+        logging.error(f"Error storing in Pinecone: {e}")
+    
+    return {"message": "Training text added successfully", "doc_id": training_doc.id}
 
 @api_router.get("/training/docs", response_model=List[TrainingDoc])
 async def get_training_docs(username: str = Depends(verify_token)):
