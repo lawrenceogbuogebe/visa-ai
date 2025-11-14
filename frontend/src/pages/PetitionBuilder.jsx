@@ -729,13 +729,21 @@ The letter should sound personal and authentic to the recommender, not generic. 
                 + Add Another Reference Letter
               </button>
 
-              <button
-                onClick={handleGenerateReferences}
-                className="btn-primary w-full"
-                disabled={loading || referenceInfo.length === 0}
-              >
-                {loading ? 'Generating Reference Letters...' : `Generate ${referenceInfo.length} Reference Letters`}
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setStep(3)}
+                  className="btn-ghost flex-1"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={handleGenerateReferences}
+                  className="btn-primary flex-1"
+                  disabled={loading || referenceInfo.length === 0}
+                >
+                  {loading ? 'Generating Reference Letters...' : `Generate ${referenceInfo.length} Reference Letters`}
+                </button>
+              </div>
             </div>
           )}
 
