@@ -740,9 +740,9 @@ The letter should sound personal and authentic to the recommender, not generic. 
                 <button
                   onClick={handleGenerateReferences}
                   className="btn-primary flex-1"
-                  disabled={loading || referenceInfo.length === 0}
+                  disabled={loading || referenceInfo.filter(r => r.name.trim()).length === 0}
                 >
-                  {loading ? 'Generating Reference Letters...' : `Generate ${referenceInfo.length} Reference Letters`}
+                  {loading ? 'Generating Reference Letters...' : `Generate ${referenceInfo.filter(r => r.name.trim()).length} Reference Letters`}
                 </button>
               </div>
             </div>
