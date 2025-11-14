@@ -732,6 +732,86 @@ async def clear_chat_history(client_id: str, username: str = Depends(verify_toke
     result = await db.chat_history.delete_many({'client_id': client_id})
     return {"message": f"Deleted {result.deleted_count} messages"}
 
+# CV Parsing for Auto-fill
+@api_router.post("/cv/parse", response_model=CVParseResponse)
+async def parse_cv(request: CVParseRequest, username: str = Depends(verify_token)):
+    # Get client's most recent CV document
+    cv_doc = await db.documents.find_one(
+        {'client_id': request.client_id, 'file_type': 'cv'},
+        {'_id': 0}
+    )
+    
+    if not cv_doc:
+        raise HTTPException(status_code=404, detail="No CV found for this client")
+    
+    # Extract text from CV
+    file_path = cv_doc['file_path']
+    if file_path.endswith('.pdf'):
+        cv_text = extract_text_from_pdf(file_path)
+    elif file_path.endswith('.docx'):
+        cv_text = extract_text_from_docx(file_path)
+    else:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            cv_text = f.read()
+    
+    # Use AI to extract structured data
+    system_message = """You are an expert at extracting structured information from CVs and resumes.
+Extract the following information and return ONLY valid JSON with no additional text:
+{
+  "full_name": "",
+  "field": "",
+  "degree": "",
+  "experience_years": "",
+  "achievements": "",
+  "publications_count": "",
+  "awards": "",
+  "current_position": "",
+  "research_focus": ""
+}"""
+    
+    chat = LlmChat(
+        api_key=os.environ.get('EMERGENT_LLM_KEY'),
+        session_id=f"cv_parse_{request.client_id}",
+        system_message=system_message
+    ).with_model("openai", "gpt-4o")
+    
+    prompt = f"""Extract information from this CV/resume:
+
+{cv_text[:4000]}
+
+Return structured JSON with:
+- full_name: Person's full name
+- field: Primary field/industry (e.g., "Artificial Intelligence")
+- degree: Highest degree with field (e.g., "PhD in Computer Science")
+- experience_years: Total years of professional experience (just the number)
+- achievements: Bullet list of major achievements, breakthroughs, projects
+- publications_count: Number of publications (just the number)
+- awards: List of awards, honors, fellowships
+- current_position: Current job title and company
+- research_focus: Research areas and specializations
+
+Return ONLY the JSON object."""
+    
+    user_message = UserMessage(text=prompt)
+    response = await chat.send_message(user_message)
+    
+    # Parse JSON response
+    import json
+    try:
+        # Remove markdown code blocks if present
+        clean_response = response.strip()
+        if clean_response.startswith('```'):
+            clean_response = clean_response.split('```')[1]
+            if clean_response.startswith('json'):
+                clean_response = clean_response[4:]
+        clean_response = clean_response.strip()
+        
+        data = json.loads(clean_response)
+        return CVParseResponse(**data)
+    except Exception as e:
+        logging.error(f"Error parsing CV response: {e}, Response: {response}")
+        raise HTTPException(status_code=500, detail="Failed to parse CV data")
+
 # Endeavor Suggestions for EB-2 NIW
 @api_router.post("/endeavor/suggest", response_model=EndeavorResponse)
 async def suggest_endeavor(request: EndeavorRequest, username: str = Depends(verify_token)):
