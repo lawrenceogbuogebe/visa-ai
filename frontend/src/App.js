@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import ClientView from './pages/ClientView';
 import Templates from './pages/Templates';
 import Training from './pages/Training';
+import PetitionBuilder from './pages/PetitionBuilder';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('visar_token'));
