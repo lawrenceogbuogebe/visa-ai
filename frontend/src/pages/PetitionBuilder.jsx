@@ -64,6 +64,71 @@ const PetitionBuilder = ({ setToken }) => {
     }
   };
 
+  // CV Upload and Auto-fill
+  const handleCVUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setCvFile(file);
+    setUploadingCV(true);
+
+    try {
+      // Upload CV to get text content
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('client_id', clientId);
+      formData.append('file_type', 'cv');
+
+      await axios.post(`${API}/documents/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // Use AI to extract structured data from CV
+      const extractPrompt = `Extract the following information from this CV/resume and return as JSON:
+{
+  "full_name": "",
+  "field": "",
+  "degree": "",
+  "experience_years": "",
+  "achievements": "",
+  "publications_count": "",
+  "awards": "",
+  "current_position": "",
+  "research_focus": ""
+}
+
+Analyze the CV and fill in each field with the relevant information. For experience_years, count total years of professional experience. For publications_count, count the number of publications mentioned. Be specific and detailed.`;
+
+      const response = await axios.post(`${API}/chat/message`, {
+        client_id: clientId,
+        message: extractPrompt
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Parse AI response
+      try {
+        const extractedData = JSON.parse(response.data.response);
+        setBackgroundData({
+          ...backgroundData,
+          ...extractedData,
+          full_name: extractedData.full_name || client.name
+        });
+        toast.success('CV data extracted! Please review and edit as needed.');
+      } catch (parseError) {
+        // If JSON parsing fails, try to extract data manually
+        toast.info('CV uploaded. Please fill in the details manually.');
+      }
+    } catch (error) {
+      toast.error('Failed to process CV. Please fill manually.');
+    } finally {
+      setUploadingCV(false);
+    }
+  };
+
   // Step 1: Submit Background
   const handleBackgroundSubmit = async (e) => {
     e.preventDefault();
