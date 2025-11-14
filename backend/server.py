@@ -348,6 +348,23 @@ async def get_documents(client_id: str, username: str = Depends(verify_token)):
     
     return docs
 
+@api_router.delete("/documents/{document_id}")
+async def delete_document(document_id: str, username: str = Depends(verify_token)):
+    doc = await db.documents.find_one({'id': document_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Delete file
+    try:
+        if os.path.exists(doc['file_path']):
+            os.remove(doc['file_path'])
+    except Exception as e:
+        logging.error(f"Error deleting file: {e}")
+    
+    # Delete from database
+    await db.documents.delete_one({'id': document_id})
+    return {"message": "Document deleted successfully"}
+
 # Template Endpoints
 @api_router.post("/templates", response_model=Template)
 async def create_template(template_data: TemplateCreate, username: str = Depends(verify_token)):
