@@ -378,7 +378,27 @@ const ClientView = ({ setToken }) => {
                           <p className="text-sm text-gray-400">Uploaded {new Date(doc.uploaded_at).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      <span className="px-3 py-1 text-xs rounded-full glass">{doc.file_type}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="px-3 py-1 text-xs rounded-full glass">{doc.file_type}</span>
+                        <button
+                          onClick={async () => {
+                            if (window.confirm('Delete this document?')) {
+                              try {
+                                await axios.delete(`${API}/documents/${doc.id}`, {
+                                  headers: { Authorization: `Bearer ${token}` }
+                                });
+                                toast.success('Document deleted');
+                                fetchDocuments();
+                              } catch (error) {
+                                toast.error('Failed to delete document');
+                              }
+                            }
+                          }}
+                          className="text-red-400 hover:text-red-300 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
