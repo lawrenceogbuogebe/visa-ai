@@ -44,7 +44,11 @@ const PetitionBuilder = ({ setToken }) => {
   // Step 4: Reference Letters
   const [referenceLetters, setReferenceLetters] = useState([]);
   const [numReferences, setNumReferences] = useState(3);
-  const [referenceInfo, setReferenceInfo] = useState([]);
+  const [referenceInfo, setReferenceInfo] = useState([
+    { name: '', position: '', institution: '', relationship: '', focus: '' },
+    { name: '', position: '', institution: '', relationship: '', focus: '' },
+    { name: '', position: '', institution: '', relationship: '', focus: '' }
+  ]);
 
   const token = localStorage.getItem('visar_token');
 
