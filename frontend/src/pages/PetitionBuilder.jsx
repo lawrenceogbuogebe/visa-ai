@@ -520,6 +520,13 @@ The letter should sound personal and authentic to the recommender, not generic. 
           {/* Step 2: Select Endeavors & Arguments */}
           {step === 2 && (
             <div>
+              <button
+                onClick={() => setStep(1)}
+                className="btn-ghost flex items-center gap-2 mb-6"
+              >
+                <ArrowLeft size={18} />
+                Back to Background Form
+              </button>
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk' }}>Select Proposed Endeavors & Arguments</h2>
               
               <div className="mb-8">
