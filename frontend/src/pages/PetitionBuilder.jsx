@@ -73,7 +73,7 @@ const PetitionBuilder = ({ setToken }) => {
     setUploadingCV(true);
 
     try {
-      // Upload CV to get text content
+      // Upload CV
       const formData = new FormData();
       formData.append('file', file);
       formData.append('client_id', clientId);
@@ -86,44 +86,27 @@ const PetitionBuilder = ({ setToken }) => {
         }
       });
 
-      // Use AI to extract structured data from CV
-      const extractPrompt = `Extract the following information from this CV/resume and return as JSON:
-{
-  "full_name": "",
-  "field": "",
-  "degree": "",
-  "experience_years": "",
-  "achievements": "",
-  "publications_count": "",
-  "awards": "",
-  "current_position": "",
-  "research_focus": ""
-}
-
-Analyze the CV and fill in each field with the relevant information. For experience_years, count total years of professional experience. For publications_count, count the number of publications mentioned. Be specific and detailed.`;
-
-      const response = await axios.post(`${API}/chat/message`, {
-        client_id: clientId,
-        message: extractPrompt
+      // Parse CV and extract data
+      const response = await axios.post(`${API}/cv/parse`, {
+        client_id: clientId
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      // Parse AI response
-      try {
-        const extractedData = JSON.parse(response.data.response);
-        setBackgroundData({
-          ...backgroundData,
-          ...extractedData,
-          full_name: extractedData.full_name || client.name
-        });
-        toast.success('CV data extracted! Please review and edit as needed.');
-      } catch (parseError) {
-        // If JSON parsing fails, try to extract data manually
-        toast.info('CV uploaded. Please fill in the details manually.');
-      }
+      // Auto-fill form
+      setBackgroundData({
+        ...backgroundData,
+        ...response.data,
+        full_name: response.data.full_name || client.name
+      });
+      
+      toast.success('CV data extracted! Review and edit as needed.');
     } catch (error) {
-      toast.error('Failed to process CV. Please fill manually.');
+      if (error.response?.status === 404) {
+        toast.error('No CV found. The file may still be uploading.');
+      } else {
+        toast.error('Failed to process CV. Please fill manually.');
+      }
     } finally {
       setUploadingCV(false);
     }
