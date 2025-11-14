@@ -606,8 +606,12 @@ The letter should sound personal and authentic to the recommender, not generic. 
               </button>
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk' }}>Cover Letter Draft</h2>
               
-              <div className="glass p-6 mb-6 max-h-96 overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-sm font-sans">{coverLetter}</pre>
+              <div className="glass p-6 mb-6 max-h-[600px] overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-sm font-sans leading-relaxed">{coverLetter}</pre>
+              </div>
+              
+              <div className="text-sm text-gray-400 mb-4">
+                Total length: {coverLetter.split(' ').length} words • Scroll to see full content ↑↓
               </div>
 
               <div className="mb-6">
