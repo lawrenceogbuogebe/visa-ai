@@ -30,6 +30,7 @@ function App() {
           <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Auth setToken={setToken} />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard setToken={setToken} /></ProtectedRoute>} />
           <Route path="/client/:clientId" element={<ProtectedRoute><ClientView setToken={setToken} /></ProtectedRoute>} />
+          <Route path="/petition-builder/:clientId" element={<ProtectedRoute><PetitionBuilder setToken={setToken} /></ProtectedRoute>} />
           <Route path="/templates" element={<ProtectedRoute><Templates setToken={setToken} /></ProtectedRoute>} />
           <Route path="/training" element={<ProtectedRoute><Training setToken={setToken} /></ProtectedRoute>} />
         </Routes>
