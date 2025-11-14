@@ -172,8 +172,20 @@ const Training = ({ setToken }) => {
 
         {/* Header */}
         <div className="mb-8">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-3" style={{ fontFamily: 'Space Grotesk' }}>Training Documents</h2>
-          <p className="text-base lg:text-lg text-gray-400">Upload successful and unsuccessful petitions to improve AI generation</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-3" style={{ fontFamily: 'Space Grotesk' }}>Training Database</h2>
+          <p className="text-base lg:text-lg text-gray-400">Upload petitions and USCIS decisions to improve AI generation quality</p>
+        </div>
+
+        {/* Info Banner */}
+        <div className="glass-strong p-6 mb-8 border-l-4 border-brand-accent">
+          <h3 className="font-semibold mb-2 brand-accent">How Training Works</h3>
+          <ul className="text-sm text-gray-300 space-y-2">
+            <li>• <strong>Petitions:</strong> Your past successful/unsuccessful petition documents</li>
+            <li>• <strong>Precedent Decisions:</strong> AAO and USCIS precedent-setting decisions (e.g., Matter of Dhanasar)</li>
+            <li>• <strong>Non-Precedent Decisions:</strong> Other USCIS administrative decisions</li>
+            <li>• <strong>AAO Decisions:</strong> Administrative Appeals Office rulings</li>
+          </ul>
+          <p className="text-xs text-gray-400 mt-4">The AI learns writing style, structure, and successful arguments from these documents.</p>
         </div>
 
         {/* Stats */}
