@@ -434,18 +434,18 @@ const ClientView = ({ setToken }) => {
               ) : (
                 <div className="space-y-4">
                   {petitions.map((petition) => {
-                    const [expanded, setExpanded] = React.useState(false);
+                    const isExpanded = expandedPetitions[petition.id] || false;
                     const snippet = petition.content.substring(0, 150) + '...';
                     
                     return (
                       <div 
                         key={petition.id} 
                         data-testid={`petition-${petition.id}`} 
-                        className={`glass p-6 petition-card ${expanded ? 'expanded' : ''}`}
+                        className={`glass p-6 petition-card ${isExpanded ? 'expanded' : ''}`}
                       >
                         <div 
                           className="cursor-pointer"
-                          onClick={() => setExpanded(!expanded)}
+                          onClick={() => setExpandedPetitions({...expandedPetitions, [petition.id]: !isExpanded})}
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
@@ -464,19 +464,39 @@ const ClientView = ({ setToken }) => {
                               >
                                 Copy
                               </button>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm('Delete this petition?')) {
+                                    try {
+                                      await axios.delete(`${API}/petitions/${petition.id}`, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                      });
+                                      toast.success('Petition deleted');
+                                      fetchPetitions();
+                                    } catch (error) {
+                                      toast.error('Failed to delete petition');
+                                    }
+                                  }
+                                }}
+                                className="text-red-400 hover:text-red-300 text-xs px-3 py-1"
+                                data-testid={`delete-petition-${petition.id}`}
+                              >
+                                Delete
+                              </button>
                               <span className="px-3 py-1 text-xs rounded-full badge-gradient">{petition.visa_type}</span>
-                              <button className="text-gray-400 hover:text-white transition-colors">
-                                {expanded ? '▲' : '▼'}
+                              <button className="text-gray-400 hover:text-white transition-colors text-xl">
+                                {isExpanded ? '▲' : '▼'}
                               </button>
                             </div>
                           </div>
                           
-                          {!expanded && (
+                          {!isExpanded && (
                             <p className="text-sm text-gray-400 italic">{snippet}</p>
                           )}
                         </div>
                         
-                        <div className={`petition-content ${expanded ? 'expanded' : ''}`}>
+                        <div className={`petition-content ${isExpanded ? 'expanded' : ''}`}>
                           <hr className="border-white/10 my-4" />
                           <div className="prose prose-invert max-w-none">
                             {petition.content.split('\n').map((line, i) => {
