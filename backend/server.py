@@ -471,7 +471,7 @@ IMPORTANT: Use specific information from the client's documents above. Include r
 
 @api_router.get("/petitions/{client_id}", response_model=List[Petition])
 async def get_petitions(client_id: str, username: str = Depends(verify_token)):
-    petitions = await db.petitions.find({'client_id': client_id}, {'_id': 0}).to_list(1000)
+    petitions = await db.petitions.find({'client_id': client_id}, {'_id': 0}).sort('created_at', -1).to_list(1000)
     
     for petition in petitions:
         if isinstance(petition['created_at'], str):
