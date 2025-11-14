@@ -453,22 +453,27 @@ const Training = ({ setToken }) => {
                 {unsuccessfulDocs.length === 0 ? (
                   <p className="text-gray-400 text-sm">No unsuccessful petitions uploaded yet</p>
                 ) : (
-                  unsuccessfulDocs.map((doc, index) => (
+                  unsuccessfulDocs.map((doc, index) => {
+                    const categoryBadge = getCategoryBadge(doc.doc_category || 'petition');
+                    return (
                     <div
                       key={doc.id}
                       data-testid={`training-doc-${doc.id}`}
-                      className="glass p-4 flex items-center justify-between fade-in"
+                      className="glass p-4 flex items-center justify-between fade-in card-hover"
                       style={{ animationDelay: `${index * 0.05}s` }}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <FileText className="text-red-500" size={24} />
-                        <div>
-                          <p className="font-medium">{doc.filename}</p>
-                          <p className="text-sm text-gray-400">Uploaded {new Date(doc.created_at).toLocaleDateString()}</p>
+                        <div className="flex-1">
+                          <p className="font-medium">{doc.filename || 'Pasted Text'}</p>
+                          <p className="text-sm text-gray-400">Added {new Date(doc.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="px-3 py-1 text-xs rounded-full brand-bg text-white">{doc.visa_type}</span>
+                        <span className={`px-3 py-1 text-xs rounded-full ${categoryBadge.color} text-white`}>
+                          {categoryBadge.label}
+                        </span>
+                        <span className="px-3 py-1 text-xs rounded-full badge-gradient">{doc.visa_type}</span>
                         <button
                           data-testid={`delete-training-${doc.id}`}
                           onClick={async () => {
