@@ -217,6 +217,30 @@ const ClientView = ({ setToken }) => {
 
           <TabsContent value="chat">
             <div className="glass-strong p-6 rounded-2xl">
+              {/* Clear Chat Button */}
+              {chatHistory.length > 0 && (
+                <div className="flex justify-end mb-4">
+                  <button
+                    onClick={async () => {
+                      if (window.confirm('Clear all chat history?')) {
+                        try {
+                          await axios.delete(`${API}/chat/history/${clientId}`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                          });
+                          toast.success('Chat history cleared');
+                          fetchChatHistory();
+                        } catch (error) {
+                          toast.error('Failed to clear chat');
+                        }
+                      }
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm"
+                  >
+                    Clear Chat
+                  </button>
+                </div>
+              )}
+              
               {/* Chat Messages */}
               <div className="h-96 overflow-y-auto mb-6 space-y-4">
                 {chatHistory.length === 0 ? (
