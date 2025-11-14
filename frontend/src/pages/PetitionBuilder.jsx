@@ -627,12 +627,20 @@ The letter should sound personal and authentic to the recommender, not generic. 
                 </button>
               </div>
 
-              <button
-                onClick={() => setStep(4)}
-                className="btn-primary w-full"
-              >
-                Approve & Generate Reference Letters
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setStep(2)}
+                  className="btn-ghost flex-1"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={() => setStep(4)}
+                  className="btn-primary flex-1"
+                >
+                  Approve & Generate Reference Letters
+                </button>
+              </div>
             </div>
           )}
 
