@@ -479,6 +479,13 @@ async def get_petitions(client_id: str, username: str = Depends(verify_token)):
     
     return petitions
 
+@api_router.delete("/petitions/{petition_id}")
+async def delete_petition(petition_id: str, username: str = Depends(verify_token)):
+    result = await db.petitions.delete_one({'id': petition_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Petition not found")
+    return {"message": "Petition deleted successfully"}
+
 # Training Document Upload
 @api_router.post("/training/upload")
 async def upload_training_doc(
