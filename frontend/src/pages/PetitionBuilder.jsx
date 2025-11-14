@@ -575,13 +575,21 @@ The letter should sound personal and authentic to the recommender, not generic. 
                 </div>
               </div>
 
-              <button
-                onClick={handleGenerateCoverLetter}
-                className="btn-primary w-full"
-                disabled={loading || selectedEndeavors.length === 0}
-              >
-                {loading ? 'Generating Cover Letter...' : 'Generate Cover Letter'}
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setStep(1)}
+                  className="btn-ghost flex-1"
+                >
+                  ← Back
+                </button>
+                <button
+                  onClick={handleGenerateCoverLetter}
+                  className="btn-primary flex-1"
+                  disabled={loading || selectedEndeavors.length === 0}
+                >
+                  {loading ? 'Generating Cover Letter...' : 'Generate Cover Letter'}
+                </button>
+              </div>
             </div>
           )}
 
