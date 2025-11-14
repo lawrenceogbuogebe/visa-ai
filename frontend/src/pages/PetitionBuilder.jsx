@@ -388,6 +388,31 @@ The letter should sound personal and authentic to the recommender, not generic. 
           {step === 1 && (
             <div>
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk' }}>Professional Background</h2>
+              
+              {/* CV Upload Option */}
+              <div className="glass p-6 mb-6 border-2 border-dashed border-brand-accent/30">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Sparkles className="brand-accent" size={20} />
+                  Quick Start: Upload CV/Resume (Optional)
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  Upload your CV and we'll automatically extract information to fill the form. You can review and edit all fields after.
+                </p>
+                <input
+                  type="file"
+                  onChange={handleCVUpload}
+                  className="input-field"
+                  accept=".pdf,.docx,.doc"
+                  disabled={uploadingCV}
+                />
+                {uploadingCV && (
+                  <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
+                    <div className="spinner" />
+                    Extracting information from CV...
+                  </div>
+                )}
+              </div>
+
               <form onSubmit={handleBackgroundSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
