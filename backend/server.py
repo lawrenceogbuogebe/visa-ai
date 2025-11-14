@@ -168,6 +168,14 @@ class ChatResponse(BaseModel):
     response: str
     message_id: str
 
+class EndeavorRequest(BaseModel):
+    professional_background: str
+    field: str
+    
+class EndeavorResponse(BaseModel):
+    endeavors: List[str]
+    national_interest_angles: List[str]
+
 # Helper Functions
 def create_token(username: str) -> str:
     payload = {
