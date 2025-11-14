@@ -495,7 +495,8 @@ const Training = ({ setToken }) => {
                         </button>
                       </div>
                     </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
