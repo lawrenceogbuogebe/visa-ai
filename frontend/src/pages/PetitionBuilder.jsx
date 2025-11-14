@@ -172,15 +172,24 @@ ${selectedEndeavors.map((e, i) => `${i + 1}. ${e}`).join('\n')}
 Selected National Interest Arguments:
 ${selectedArguments.map((a, i) => `${i + 1}. ${a}`).join('\n')}
 
-Generate a comprehensive, persuasive EB-2 NIW cover letter following this structure:
-1. Introduction (who petitioner is, what they're requesting)
-2. Proposed Endeavor (detailed description)
-3. Prong 1: Substantial Merit and National Importance
-4. Prong 2: Well Positioned to Advance the Endeavor
-5. Prong 3: Balance of Interests (waiving labor certification)
-6. Conclusion
+Generate a COMPLETE, comprehensive EB-2 NIW cover letter following this structure:
 
-Use specific details from the professional background. Write in a professional, persuasive tone suitable for USCIS adjudication. Length: 8-12 pages.`;
+1. Introduction (who petitioner is, what they're requesting)
+2. Proposed Endeavor (detailed description of the specific endeavor)
+3. Prong 1: Substantial Merit and National Importance (minimum 3 paragraphs)
+4. Prong 2: Well Positioned to Advance the Endeavor (minimum 3 paragraphs with evidence)
+5. Prong 3: Balance of Interests - waiving labor certification (minimum 2 paragraphs)
+6. Conclusion (strong closing statement)
+
+IMPORTANT: 
+- Generate the ENTIRE letter, do NOT stop mid-sentence
+- Use specific details, numbers, and achievements from the professional background
+- Each section must be fully developed with evidence
+- Write in a professional, persuasive tone suitable for USCIS adjudication
+- Minimum 6-8 pages of content
+- End with a complete conclusion paragraph
+
+Do NOT use placeholders. Generate the complete, submission-ready letter.`;
 
       const response = await axios.post(`${API}/petitions/generate`, {
         client_id: clientId,
