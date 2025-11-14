@@ -647,6 +647,13 @@ The letter should sound personal and authentic to the recommender, not generic. 
           {/* Step 4: Reference Letters */}
           {step === 4 && (
             <div>
+              <button
+                onClick={() => setStep(3)}
+                className="btn-ghost flex items-center gap-2 mb-6"
+              >
+                <ArrowLeft size={18} />
+                Back to Cover Letter
+              </button>
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Space Grotesk' }}>Reference Letters</h2>
               
               <p className="text-gray-400 mb-6">Add details for each recommender. We'll generate personalized letters for each.</p>
