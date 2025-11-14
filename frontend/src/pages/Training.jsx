@@ -57,6 +57,7 @@ const Training = ({ setToken }) => {
     const formData = new FormData();
     formData.append('file', selectedFile);
     formData.append('doc_type', uploadData.doc_type);
+    formData.append('doc_category', uploadData.doc_category);
     formData.append('visa_type', uploadData.visa_type);
 
     try {
