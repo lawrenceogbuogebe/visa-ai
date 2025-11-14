@@ -210,57 +210,157 @@ const Training = ({ setToken }) => {
                 Upload Training Document
               </button>
             </DialogTrigger>
-            <DialogContent className="glass-strong text-white border-white/20">
+            <DialogContent className="glass-strong text-white border-white/20 max-w-3xl">
               <DialogHeader>
-                <DialogTitle style={{ fontFamily: 'Space Grotesk' }}>Upload Training Document</DialogTitle>
+                <DialogTitle style={{ fontFamily: 'Space Grotesk' }}>Add Training Data</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleUpload} className="space-y-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Document Type</label>
-                  <select
-                    data-testid="doc-type-select"
-                    value={uploadData.doc_type}
-                    onChange={(e) => setUploadData({ ...uploadData, doc_type: e.target.value })}
-                    className="input-field"
-                  >
-                    <option value="successful">Successful Petition</option>
-                    <option value="unsuccessful">Unsuccessful Petition</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Visa Type</label>
-                  <select
-                    data-testid="training-visa-type-select"
-                    value={uploadData.visa_type}
-                    onChange={(e) => setUploadData({ ...uploadData, visa_type: e.target.value })}
-                    className="input-field"
-                  >
-                    <option value="EB1A">EB-1A</option>
-                    <option value="EB2NIW">EB-2 NIW</option>
-                    <option value="O-1A">O-1A</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Choose File</label>
-                  <input
-                    data-testid="training-file-input"
-                    type="file"
-                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                    className="input-field"
-                    accept=".pdf,.docx,.doc,.txt"
-                    required
-                  />
-                  <p className="text-xs text-gray-500 mt-2">Supported formats: PDF, DOCX, DOC, TXT</p>
-                </div>
-                <button
-                  data-testid="submit-training-button"
-                  type="submit"
-                  className="btn-primary w-full"
-                  disabled={uploading}
-                >
-                  {uploading ? 'Uploading & Indexing...' : 'Upload'}
-                </button>
-              </form>
+              
+              <Tabs defaultValue="upload" className="mt-4">
+                <TabsList className="glass-strong border border-white/10 mb-4">
+                  <TabsTrigger value="upload">Upload File</TabsTrigger>
+                  <TabsTrigger value="paste">Paste Text</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="upload">
+                  <form onSubmit={handleUpload} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Document Type</label>
+                      <select
+                        data-testid="doc-type-select"
+                        value={uploadData.doc_type}
+                        onChange={(e) => setUploadData({ ...uploadData, doc_type: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="successful">Successful</option>
+                        <option value="unsuccessful">Unsuccessful</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Category</label>
+                      <select
+                        data-testid="category-select"
+                        value={uploadData.doc_category}
+                        onChange={(e) => setUploadData({ ...uploadData, doc_category: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="petition">Petition Document</option>
+                        <option value="precedent_decision">Precedent Decision</option>
+                        <option value="non_precedent_decision">Non-Precedent Decision</option>
+                        <option value="aao_decision">AAO Decision</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Visa Type</label>
+                      <select
+                        data-testid="training-visa-type-select"
+                        value={uploadData.visa_type}
+                        onChange={(e) => setUploadData({ ...uploadData, visa_type: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="EB2NIW">EB-2 NIW</option>
+                        <option value="EB1A">EB-1A</option>
+                        <option value="O-1A">O-1A</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Choose File</label>
+                      <input
+                        data-testid="training-file-input"
+                        type="file"
+                        onChange={(e) => setSelectedFile(e.target.files[0])}
+                        className="input-field"
+                        accept=".pdf,.docx,.doc,.txt"
+                        required
+                      />
+                      <p className="text-xs text-gray-500 mt-2">Supported: PDF, DOCX, DOC, TXT</p>
+                    </div>
+                    <button
+                      data-testid="submit-training-button"
+                      type="submit"
+                      className="btn-primary w-full"
+                      disabled={uploading}
+                    >
+                      {uploading ? 'Uploading & Indexing...' : 'Upload'}
+                    </button>
+                  </form>
+                </TabsContent>
+
+                <TabsContent value="paste">
+                  <form onSubmit={handlePaste} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Title/Name</label>
+                      <input
+                        data-testid="paste-title-input"
+                        type="text"
+                        value={pasteData.title}
+                        onChange={(e) => setPasteData({ ...pasteData, title: e.target.value })}
+                        className="input-field"
+                        placeholder="e.g., Matter of Dhanasar"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Document Type</label>
+                      <select
+                        data-testid="paste-doc-type-select"
+                        value={pasteData.doc_type}
+                        onChange={(e) => setPasteData({ ...pasteData, doc_type: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="successful">Successful</option>
+                        <option value="unsuccessful">Unsuccessful</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Category</label>
+                      <select
+                        data-testid="paste-category-select"
+                        value={pasteData.doc_category}
+                        onChange={(e) => setPasteData({ ...pasteData, doc_category: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="petition">Petition Document</option>
+                        <option value="precedent_decision">Precedent Decision</option>
+                        <option value="non_precedent_decision">Non-Precedent Decision</option>
+                        <option value="aao_decision">AAO Decision</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Visa Type</label>
+                      <select
+                        data-testid="paste-visa-type-select"
+                        value={pasteData.visa_type}
+                        onChange={(e) => setPasteData({ ...pasteData, visa_type: e.target.value })}
+                        className="input-field"
+                      >
+                        <option value="EB2NIW">EB-2 NIW</option>
+                        <option value="EB1A">EB-1A</option>
+                        <option value="O-1A">O-1A</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Content</label>
+                      <textarea
+                        data-testid="paste-content-textarea"
+                        value={pasteData.content}
+                        onChange={(e) => setPasteData({ ...pasteData, content: e.target.value })}
+                        className="input-field"
+                        placeholder="Paste the full text of the decision or petition here..."
+                        rows={10}
+                        required
+                      />
+                    </div>
+                    <button
+                      data-testid="submit-paste-button"
+                      type="submit"
+                      className="btn-primary w-full"
+                      disabled={uploading}
+                    >
+                      {uploading ? 'Adding & Indexing...' : 'Add Text'}
+                    </button>
+                  </form>
+                </TabsContent>
+              </Tabs>
             </DialogContent>
           </Dialog>
         </div>
