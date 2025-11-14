@@ -713,6 +713,11 @@ async def get_chat_history(client_id: str, username: str = Depends(verify_token)
     
     return history
 
+@api_router.delete("/chat/history/{client_id}")
+async def clear_chat_history(client_id: str, username: str = Depends(verify_token)):
+    result = await db.chat_history.delete_many({'client_id': client_id})
+    return {"message": f"Deleted {result.deleted_count} messages"}
+
 # Endeavor Suggestions for EB-2 NIW
 @api_router.post("/endeavor/suggest", response_model=EndeavorResponse)
 async def suggest_endeavor(request: EndeavorRequest, username: str = Depends(verify_token)):
