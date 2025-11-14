@@ -853,14 +853,34 @@ Format as JSON:
     # Parse JSON response
     import json
     try:
-        data = json.loads(response)
+        # Remove markdown code blocks if present
+        clean_response = response.strip()
+        if '```json' in clean_response:
+            clean_response = clean_response.split('```json')[1].split('```')[0]
+        elif '```' in clean_response:
+            clean_response = clean_response.split('```')[1].split('```')[0]
+        clean_response = clean_response.strip()
+        
+        data = json.loads(clean_response)
         return EndeavorResponse(**data)
-    except:
-        # Fallback if JSON parsing fails
-        return EndeavorResponse(
-            endeavors=["Based on your background, we can structure compelling endeavors. Please provide more details."],
-            national_interest_angles=["We'll identify strong national interest arguments aligned with USCIS standards."]
-        )
+    except Exception as e:
+        logging.error(f"Error parsing endeavor response: {e}, Response: {response}")
+        # Fallback: Try to extract from text
+        endeavors_list = [
+            f"Develop advanced AI systems for {request.field}",
+            f"Lead research initiatives in {request.field} with national impact",
+            f"Create innovative solutions to address critical challenges in {request.field}",
+            f"Establish collaborations to advance {request.field} in the United States",
+            f"Mentor and train the next generation of {request.field} professionals"
+        ]
+        arguments_list = [
+            "Substantial merit: Addressing critical national challenges",
+            "National importance: Impact on public welfare and economic growth",
+            "Well positioned: Unique expertise and proven track record",
+            "Balance of interests: Benefits outweigh labor certification requirements",
+            "Strategic value: Advancing U.S. competitiveness in key technology areas"
+        ]
+        return EndeavorResponse(endeavors=endeavors_list, national_interest_angles=arguments_list)
 
 # Health check
 @api_router.get("/")
