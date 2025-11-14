@@ -194,7 +194,7 @@ Do NOT use placeholders. Generate the complete, submission-ready letter.`;
       const response = await axios.post(`${API}/petitions/generate`, {
         client_id: clientId,
         visa_type: 'EB2NIW',
-        criterion: null,
+        criterion: 'Cover Letter - I-140 Petition',
         prompt: prompt
       }, {
         headers: { Authorization: `Bearer ${token}` }
