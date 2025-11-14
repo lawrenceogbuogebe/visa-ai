@@ -264,8 +264,8 @@ Generate the revised version maintaining the same structure but incorporating th
     const generatedLetters = [];
 
     try {
-      for (let i = 0; i < referenceInfo.length; i++) {
-        const ref = referenceInfo[i];
+      for (let i = 0; i < filledReferences.length; i++) {
+        const ref = filledReferences[i];
         const prompt = `Generate a professional reference letter for ${backgroundData.full_name}'s EB-2 NIW petition.
 
 Recommender Details:
