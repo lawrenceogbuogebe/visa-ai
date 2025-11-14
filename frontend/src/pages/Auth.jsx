@@ -24,7 +24,7 @@ const Auth = ({ setToken }) => {
       });
 
       setToken(response.data.token);
-      toast.success(`Welcome ${response.data.username}!`);
+      toast.success(`Welcome to VisaroAI, ${response.data.username}!`);
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Authentication failed');
     } finally {
@@ -36,19 +36,20 @@ const Auth = ({ setToken }) => {
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0a0a0b 0%, #1a0f0a 100%)' }}>
       <Toaster position="top-center" />
       
-      {/* Background decoration */}
+      {/* Background decoration with glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-brand-accent opacity-5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-brand-accent opacity-5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-96 h-96 bg-brand-accent opacity-10 rounded-full blur-3xl glow-animation" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-brand-accent opacity-10 rounded-full blur-3xl glow-animation" style={{ animationDelay: '1s' }} />
       </div>
 
       <div className="glass-strong p-8 sm:p-12 w-full max-w-md relative z-10 fade-in">
-        {/* Logo */}
+        {/* Logo with glow */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ fontFamily: 'Space Grotesk' }}>
-            <span className="brand-accent">Visar</span>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 brand-glow" style={{ fontFamily: 'Space Grotesk' }}>
+            <span className="brand-accent">VisaroAI</span>
           </h1>
-          <p className="text-base text-gray-400">Immigration Petition Platform</p>
+          <p className="text-base text-gray-400">AI-Powered Immigration Petition System</p>
+          <p className="text-xs text-gray-500 mt-2">Specialized for EB-2 NIW Excellence</p>
         </div>
 
         {/* Auth Form */}
@@ -110,7 +111,8 @@ const Auth = ({ setToken }) => {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-white/10 text-center">
           <p className="text-xs text-gray-500">
-            Expertly crafted immigration petitions for EB-1A, EB-2 NIW, and O-1 visas
+            Purpose-built for EB-1A, EB-2 NIW, and O-1 visa petitions<br />
+            Trained on USCIS precedent decisions
           </p>
         </div>
       </div>
