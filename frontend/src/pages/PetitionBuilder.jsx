@@ -754,30 +754,146 @@ The letter should sound personal and authentic to the recommender, not generic. 
 
           {/* Step 5: Complete */}
           {step === 5 && (
-            <div className="text-center">
-              <CheckCircle className="mx-auto mb-6 text-green-500" size={64} />
-              <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk' }}>Petition Package Complete!</h2>
-              <p className="text-gray-400 mb-8">Your EB-2 NIW petition documents have been generated.</p>
-
-              <div className="space-y-4 mb-8">
-                <div className="glass p-4 text-left">
-                  <h3 className="font-semibold mb-2">📄 Cover Letter</h3>
-                  <p className="text-sm text-gray-400">Full I-140 petition letter</p>
-                </div>
-                {referenceLetters.map((letter, i) => (
-                  <div key={i} className="glass p-4 text-left">
-                    <h3 className="font-semibold mb-2">✉️ Reference Letter {i + 1}</h3>
-                    <p className="text-sm text-gray-400">From {letter.name}</p>
-                  </div>
-                ))}
+            <div>
+              <div className="text-center mb-8">
+                <CheckCircle className="mx-auto mb-6 text-green-500" size={64} />
+                <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: 'Space Grotesk' }}>Petition Package Complete!</h2>
+                <p className="text-gray-400">Your EB-2 NIW petition documents have been generated. Click each document to view, copy, or export.</p>
               </div>
 
-              <div className="flex gap-4">
+              {/* Cover Letter */}
+              <div className="glass p-6 mb-4">
+                <div 
+                  className="flex items-center justify-between cursor-pointer"
+                  onClick={() => setExpandedPetitions({...expandedPetitions, 'cover': !expandedPetitions['cover']})}
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold brand-accent">📄 Cover Letter - I-140 Petition</h3>
+                    <p className="text-sm text-gray-400">{coverLetter.split(' ').length} words</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(coverLetter);
+                        toast.success('Cover letter copied!');
+                      }}
+                      className="btn-secondary text-xs px-3 py-1"
+                    >
+                      Copy
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // TODO: Export to docs
+                        toast.info('Export feature coming soon!');
+                      }}
+                      className="btn-secondary text-xs px-3 py-1"
+                    >
+                      Export to Docs
+                    </button>
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (window.confirm('Delete cover letter?')) {
+                          try {
+                            await axios.delete(`${API}/petitions/${coverLetterId}`, {
+                              headers: { Authorization: `Bearer ${token}` }
+                            });
+                            toast.success('Deleted');
+                            setCoverLetter('');
+                          } catch (error) {
+                            toast.error('Failed to delete');
+                          }
+                        }
+                      }}
+                      className="text-red-400 hover:text-red-300 text-xs"
+                    >
+                      Delete
+                    </button>
+                    <span className="text-xl">{expandedPetitions['cover'] ? '▲' : '▼'}</span>
+                  </div>
+                </div>
+                
+                {expandedPetitions['cover'] && (
+                  <div className="mt-4 pt-4 border-t border-white/10">
+                    <div className="max-h-96 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap text-sm font-sans leading-relaxed">{coverLetter}</pre>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Reference Letters */}
+              {referenceLetters.map((letter, i) => (
+                <div key={i} className="glass p-6 mb-4">
+                  <div 
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => setExpandedPetitions({...expandedPetitions, [`ref${i}`]: !expandedPetitions[`ref${i}`]})}
+                  >
+                    <div>
+                      <h3 className="text-lg font-semibold brand-accent">✉️ Reference Letter {i + 1}</h3>
+                      <p className="text-sm text-gray-400">From {letter.name} • {letter.content.split(' ').length} words</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigator.clipboard.writeText(letter.content);
+                          toast.success('Reference letter copied!');
+                        }}
+                        className="btn-secondary text-xs px-3 py-1"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toast.info('Export feature coming soon!');
+                        }}
+                        className="btn-secondary text-xs px-3 py-1"
+                      >
+                        Export to Docs
+                      </button>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Delete this reference letter?')) {
+                            try {
+                              await axios.delete(`${API}/petitions/${letter.id}`, {
+                                headers: { Authorization: `Bearer ${token}` }
+                              });
+                              toast.success('Deleted');
+                              setReferenceLetters(referenceLetters.filter((_, idx) => idx !== i));
+                            } catch (error) {
+                              toast.error('Failed to delete');
+                            }
+                          }
+                        }}
+                        className="text-red-400 hover:text-red-300 text-xs"
+                      >
+                        Delete
+                      </button>
+                      <span className="text-xl">{expandedPetitions[`ref${i}`] ? '▲' : '▼'}</span>
+                    </div>
+                  </div>
+                  
+                  {expandedPetitions[`ref${i}`] && (
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="max-h-96 overflow-y-auto">
+                        <pre className="whitespace-pre-wrap text-sm font-sans leading-relaxed">{letter.content}</pre>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <div className="flex gap-4 mt-8">
                 <button
-                  onClick={() => navigate(`/client/${clientId}`)}
+                  onClick={() => navigate(`/client/${clientId}?tab=petitions`)}
                   className="btn-primary flex-1"
                 >
-                  View All Documents
+                  View in Client Page
                 </button>
                 <button
                   onClick={() => {
@@ -797,7 +913,11 @@ The letter should sound personal and authentic to the recommender, not generic. 
                     setSelectedArguments([]);
                     setCoverLetter('');
                     setReferenceLetters([]);
-                    setReferenceInfo([]);
+                    setReferenceInfo([
+                      { name: '', position: '', institution: '', relationship: '', focus: '' },
+                      { name: '', position: '', institution: '', relationship: '', focus: '' },
+                      { name: '', position: '', institution: '', relationship: '', focus: '' }
+                    ]);
                   }}
                   className="btn-secondary flex-1"
                 >
