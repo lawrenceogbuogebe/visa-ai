@@ -19,7 +19,15 @@ const Training = ({ setToken }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadData, setUploadData] = useState({
     doc_type: 'successful',
-    visa_type: 'EB1A'
+    doc_category: 'petition',
+    visa_type: 'EB2NIW'
+  });
+  const [pasteData, setPasteData] = useState({
+    title: '',
+    doc_type: 'successful',
+    doc_category: 'precedent_decision',
+    visa_type: 'EB2NIW',
+    content: ''
   });
 
   const token = localStorage.getItem('visar_token');
