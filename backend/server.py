@@ -137,12 +137,20 @@ class PetitionGenerate(BaseModel):
 class TrainingDoc(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    filename: str
-    file_path: str
+    filename: Optional[str] = None
+    file_path: Optional[str] = None
     doc_type: str  # successful, unsuccessful
+    doc_category: str  # petition, non_precedent_decision, precedent_decision, aao_decision
     visa_type: str
     content: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TrainingTextCreate(BaseModel):
+    doc_type: str
+    doc_category: str
+    visa_type: str
+    content: str
+    title: str
 
 class ChatMessage(BaseModel):
     model_config = ConfigDict(extra="ignore")
